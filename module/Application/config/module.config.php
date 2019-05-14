@@ -57,7 +57,10 @@ return [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\AssetsController::class => function($container) {
-                return new Controller\AssetsController($container->get(\PDO::class));
+                return new Controller\AssetsController(
+                  $container->get(\PDO::class),
+                  $container->get(Model\DatabaseManager::class)
+                );
             },
             Controller\AssetStatusesController::class => function($container) {
                 return new Controller\AssetStatusesController(
@@ -69,6 +72,9 @@ return [
     ],
     'service_manager' => [
         'factories' => [
+            Model\DatabaseManager::class => function($container) {
+              return new Model\DatabaseManager($container->get(\PDO::class));
+            },
             \PDO::class => function ($container) {
               $dbConfig = $container->get('config')['db'];
               $host = $dbConfig['host'];
