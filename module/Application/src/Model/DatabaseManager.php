@@ -10,10 +10,15 @@ class DatabaseManager {
     }
 
     public function fetchByStatusType($statusType) {
-        $result = $this->db->query("SELECT id, asset_id, status_type, created_at FROM asset_statuses WHERE status_type='{$statusType}'");
+        $result = $this->db->query("SELECT * FROM asset_statuses WHERE status_type='{$statusType}'");
         $assets = [];
-        while ($row = $result->fetch(\PDO::FETCH_NUM)) {
-            $assetStatus = new AssetStatus(...$row);
+        while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+            $assetStatus = new AssetStatus(
+                $row['id'],
+                $row['asset_id'],
+                $row['status_type'],
+                $row['created_at']
+            );
             $assets[] = new Asset(
                 $assetStatus->getAssetId(),
                 $assetStatus
